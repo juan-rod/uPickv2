@@ -1,0 +1,47 @@
+<div id="sidePanel" class="col-md-5" >
+            <div class="panel panel-default dontMove" >
+                <!-- Panel Title -->
+                <div class="panel-heading">
+                    <h2 class="panel-title foodInArea">Food in your area<span class="glyphicon glyphicon-map-marker"></span></h2>
+                </div>
+                <!-- Panel Body -->
+                <div class="panel-body instructions">
+                    <p>Let's find a place to eat! Drop a pin. Discard. Shuffle! </p>
+                    <button class="shuffleBtn"ng-click="shuffle()">shuffle</button>
+                </div>
+</div> <!-- panel default -->
+                   <!-- ng-repeat array of places -->
+                   
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 placeList bouncy-slide-down" ng-click="remove(place)" ng-repeat="place in placeList track by $index" draggable>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 placesNameDiv">
+                            <div class="col-lg-11 col-md-11 col-sm-11 col-xs-11 detailName"><h3>{{place.name}}</h3></div>
+                           <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 detailRating"><h5>{{place.rating}}</h5></div>
+                           <!-- <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 detailOpen">
+                                        {{place.open}}</div> -->
+                        </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 placesDetailsDiv">
+                                
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 formattedDiv">
+                                        <p class="detailAddress"><span class="glyphicon glyphicon-map-marker"></span>{{place.address}}</p>
+                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 detailNumber">
+                                        <p><span class="glyphicon glyphicon-phone-alt"></span>{{place.phone_number}}</p></div>
+                                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 detailWebsite"><span class="glyphicon glyphicon-globe"></span>
+                                        <a href="{{place.website}}" target="_blank"> {{place.website}}</a></div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 reviewDiv">
+                                        <span class="glyphicon glyphicon-comment"></span><p>{{place.review}}</p></div>
+                                    
+                            </div>  <!--placesDetaildiv -->
+                      
+                    </div> <!-- placesContentDiv-->
+                </div> <!-- placesDataRow-->
+                   
+               
+                        
+
+                   
+                
+            </div>
+<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+            
