@@ -1,7 +1,8 @@
 var express = require('express'),
 	stylus = require('stylus'),
 	logger = require('morgan'),
-	bodyParser = require('body-parser');
+	bodyParser = require('body-parser')
+	ejs = require('ejs');
 
 module.exports = function(app, config){
 
@@ -10,8 +11,8 @@ module.exports = function(app, config){
 	}
 
 	app.set('public', config.rootPath + '/public');
-	// app.set('view engine', 'ejs');
-	// app.engine('html', require('ejs').renderFile);
+	app.set('view engine', 'html');
+	app.engine('html', ejs.renderFile);
 
 	// app.use('public/vendor',  express.static(config.rootPath + '/vendor')); 
 	app.use(logger('dev'));
