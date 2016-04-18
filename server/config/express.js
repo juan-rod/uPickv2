@@ -10,8 +10,8 @@ module.exports = function(app, config){
 	}
 
 	app.set('public', config.rootPath + '/public');
-	app.set('view engine', 'ejs');
-	app.engine('html', require('ejs').renderFile);
+	// app.set('view engine', 'ejs');
+	// app.engine('html', require('ejs').renderFile);
 
 	// app.use('public/vendor',  express.static(config.rootPath + '/vendor')); 
 	app.use(logger('dev'));
