@@ -50,12 +50,9 @@ var customMapTypeId = 'custom_style';
               }, callback);
 
                 function callback(results, status) {
-                	//console.log("results:",results);
                   if (status === google.maps.places.PlacesServiceStatus.OK) {
                     for (var i = 0; i < results.length; i++) {
                         var placeID = results[i].place_id;
-                        	//console.log("placeID:",placeID);
-                        	//send to functions
                            initPlacesMarker(results[i]);
                         //getPlacesDetailInfo(placeID);
                       }
@@ -177,7 +174,7 @@ var customMapTypeId = 'custom_style';
 				newLng = map.center.lng();
 
 				markerInfo(lastMarker,newLat, newLng);
-				// initPlacesMap(newLat,newLng);
+				 // initPlacesMarker(newLat,newLng);
         });
 	};
 
@@ -193,6 +190,7 @@ var customMapTypeId = 'custom_style';
 
 	function initPlacesMarker(place) {
 		var placeLoc = place.geometry.location;
+		console.log("placeLog lat:",placeLoc.lat());
 		var marker = new google.maps.Marker({
 			map: map,
 			position: placeLoc,
