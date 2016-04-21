@@ -24,4 +24,9 @@ geolocation.getLocation().then(function(data){
     mapFactory.refresh($scope.geolocate.latitude, $scope.geolocate.longitude);
      //getPlaces();
 });
+
+$('.message a').click(function(){
+   $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
+});
+
 });

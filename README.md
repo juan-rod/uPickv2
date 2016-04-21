@@ -12,3 +12,5 @@ you still need to create a db with mlab.com and you need to connect to your serv
 9. heroku create
 10. heroku config:set NODE_ENV=production
 11. git push heroku master
+12.  Well, if you're working on a branch you actually need to run
+		git push heroku <your branch>:master

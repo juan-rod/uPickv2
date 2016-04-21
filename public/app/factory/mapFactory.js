@@ -1,6 +1,4 @@
-app.factory('mapFactory', function($rootScope, $http){
-
-	
+app.factory('mapFactory', function($rootScope, $http, customMapFactory, placesDetailFactory){
 
 // Service to return
 var gMapService ={}
@@ -13,35 +11,38 @@ gMapService.clickLat = 0;
 gMapService.cleickLong = 0;
 
 // google map variables
-var map = mapInit();
-var infowindow;
-var marker;
+var infowindow,
+	map = mapInit();
 
 //initRestaurantMap variables
-var userLatLng;
-var lat = [];
-var lng = [];
-var customMapTypeId = 'custom_style';
+var userLatLng,
+	lat = [],
+	lng = [],
+	customMapTypeId = 'custom_style',
+	customMapFactory = customMapFactory.customMapType(),
+	placesMarkers = [],
+	placeIDs = [],
+	placeData = {},
+	placesDataArray = [];
 
-  // Refresh the Map with new data. Takes three parameters (lat, long, and filtering results))
     gMapService.refresh  = function(latitude, longitude, filteredResults){  
         lat.push(latitude);
         lng.push(longitude);
+        placeIDs = [];
+		userLatLng = new google.maps.LatLng(lat, lng);
 
-        initMap();
-        initPlacesMap();
+        initMap(userLatLng);
+        initPlacesMap(userLatLng);
     }; 
 
-	var initMap = function(){
-		userLatLng = new google.maps.LatLng(lat, lng);
+	var initMap = function(userLatLng){
 		mapInit();
- 		map.mapTypes.set(customMapTypeId, customMapType());
+ 		map.mapTypes.set(customMapTypeId, customMapFactory);
   		map.setMapTypeId(customMapTypeId);
 		initMapMarker(userLatLng, map);
 	};
 
-	 var initPlacesMap = function(){
-	 	  userLatLng = new google.maps.LatLng(lat, lng);
+	 var initPlacesMap = function(userLatLng){
         var service = new google.maps.places.PlacesService(map);
             service.nearbySearch({
               location: userLatLng,
@@ -52,10 +53,12 @@ var customMapTypeId = 'custom_style';
                 function callback(results, status) {
                   if (status === google.maps.places.PlacesServiceStatus.OK) {
                     for (var i = 0; i < results.length; i++) {
-                        var placeID = results[i].place_id;
-                           initPlacesMarker(results[i]);
-                        //getPlacesDetailInfo(placeID);
+                    	var nearbyRestaurants = results[i];
+                        var placeID = results[i].place_id;                        	
+                        	placeIDs.push(placeID);                        	
+                        	setPlacesMarker(nearbyRestaurants);
                       }
+                        	getPlacesDetailInfo();
                   };
                 }
 	 };
@@ -76,62 +79,6 @@ var customMapTypeId = 'custom_style';
  		});
 	};
 
-	function customMapType(){
-
-				var	customMapType = new google.maps.StyledMapType([
-				{
-					"featureType":"landscape.natural",
-					"elementType":"geometry.fill",
-					"stylers":[
-						{"visibility":"on"},
-						{"color":"#e0efef"}
-					]
-				},
-				{
-					"featureType":"poi",
-					"elementType":"geometry.fill",
-					"stylers":[
-						{"visibility":"on"},
-						{"hue":"#1900ff"},
-						{"color":"#c0e8e8"}
-					]
-				},
-				{
-					"featureType":"road",
-					"elementType":"geometry",
-					"stylers":[
-						{"lightness":100},
-						{"visibility":"simplified"}
-					]
-				},
-				{
-					"featureType":"road",
-					"elementType":"labels",
-					"stylers":[
-						{"visibility":"off"}
-					]
-				},
-				{
-					"featureType":"transit.line",
-					"elementType":"geometry",
-					"stylers":[
-						{"visibility":"on"},
-						{"lightness":700}
-					]
-				},
-				{
-					"featureType":"water",
-					"elementType":"all",
-					"stylers":[
-						{"color":"#7dcdcd"}
-					]}
-			],
-				{
-	      			name: 'Custom Style'
-	  			});
-
-	  			return customMapType;
-	};
 
 	function initMapMarker(userLatLng, map){
 		var marker = new google.maps.Marker({
@@ -150,32 +97,34 @@ var customMapTypeId = 'custom_style';
 	function newMarkerLocation(lastMarker, map){
 		console.log("newMarkerLocation:", lat, lng);
 
-		// Function for moving to a selected location
+			// Function for moving to a selected location
 			map.panTo(new google.maps.LatLng(lat, lng));
 
-      	// Clicking on the Map moves the bouncing red marker
-    	google.maps.event.addListener(map, 'click', function(e){
-	        var marker = new google.maps.Marker({
-	            position: e.latLng,
-	            animation: google.maps.Animation.Drop,
-	            map: map,
-	            icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'	          	 
+      		// Clicking on the Map moves the bouncing red marker
+	    	google.maps.event.addListener(map, 'click', function(e){
+		        var marker = new google.maps.Marker({
+		            position: e.latLng,
+		            animation: google.maps.Animation.Drop,
+		            map: map,
+		            icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'	          	 
+		        });
+			        // When a new spot is selected, delete the old red bouncing marker & reload placesMarkers 
+					if(lastMarker){
+						lastMarker.setMap(null);
+						reloadPlacesMarkers();
+					}
+					// Create a new red bouncing marker and move to it
+					lastMarker = marker;
+					map.panTo(lastMarker.position)
+
+					var newUserLatLng = lastMarker.position;
+					newLat = map.center.lat();
+					newLng = map.center.lng();
+
+					markerInfo(lastMarker,newLat, newLng);
+					initPlacesMap(newUserLatLng);
+					//getPlacesDetailInfo(placeIDs);
 	        });
-		        // When a new spot is selected, delete the old red bouncing marker
-				if(lastMarker){
-					lastMarker.setMap(null);
-				}
-
-				// Create a new red bouncing marker and move to it
-				lastMarker = marker;
-				map.panTo(marker.position)
-
-				newLat = map.center.lat();
-				newLng = map.center.lng();
-
-				markerInfo(lastMarker,newLat, newLng);
-				 // initPlacesMarker(newLat,newLng);
-        });
 	};
 
 	function markerInfo(marker, lat, lng){
@@ -188,18 +137,26 @@ var customMapTypeId = 'custom_style';
 		});
 	};
 
-	function initPlacesMarker(place) {
+	function setPlacesMarker(place) {
 		var placeLoc = place.geometry.location;
-		console.log("placeLog lat:",placeLoc.lat());
 		var marker = new google.maps.Marker({
 			map: map,
 			position: placeLoc,
 			animation: google.maps.Animation.DROP,
 			icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
 		});
-		lastMarker = marker;
-		placesInfoWindow(lastMarker, place);
+			placesMarkers.push(marker);
+			placesInfoWindow(marker, place);
 	};
+
+	function reloadPlacesMarkers() {
+	    for (var i=0; i<placesMarkers.length; i++) {
+	        placesMarkers[i].setMap(null);
+	    }
+	    placesMarkers = []; 
+	    placeIDs = []; 
+	};
+
 
 	function placesInfoWindow(marker, place){
 		marker.addListener('click',function() {
@@ -211,6 +168,72 @@ var customMapTypeId = 'custom_style';
 			content: contentString
 		});	
 	}
+
+	function getPlacesDetailInfo(){
+		var service = new google.maps.places.PlacesService(map);
+			//console.log("placeIDs:", placeIDs);
+		for (var i = 0; i < placeIDs.length; i++) {
+			var placeID = placeIDs[i];
+				//console.log("placeID in the getPlacesDetailInfo fnc :", placeID);
+			var request = { placeId: placeID};
+			var placeData = {};
+			service.getDetails(request, function(details, status) {
+					// console.log('details:', details);
+					// console.log('status:', status);
+		       	if (status === google.maps.places.PlacesServiceStatus.OK) {
+
+				    var formatted = details.formatted_phone_number,
+						unformatted = formatted.replace(/[- )(]/g,''),
+						lat = details.geometry.location.lat(),
+						lng = details.geometry.location.lng(),
+						parseLat = parseFloat(lat).toFixed(3),
+						parseLng = parseFloat(lng).toFixed(3),
+						opening_hours = details.opening_hours.open_now,
+						reviews = details.reviews[1].text;
+
+				    var placeData = {
+				        name: details.name,
+				        address: details.formatted_address,
+				        phone_number: unformatted,
+				        rating: details.rating,
+				        location: [parseLng,parseLat],
+				        type: details.types[1],
+				        review: reviews,
+				        website: details.website,
+				        open: opening_hours 
+					} ;					
+					addToPlacesDataArray(placeData);
+				}				     		
+			});
+		}
+	};
+			function addToPlacesDataArray(obj) {
+				// Create our entry backed by the defaults
+				var entry = Object.create(placeData);
+				// Loop through the new object's keys...
+				Object.keys(obj).forEach(function(key) { 
+					// ...adding a default if it's a new key
+					if (!placeData.hasOwnProperty(key)) {
+						placeData[key] = "undefined data for " + key;
+					}
+						entry[key] = obj[key];
+				});
+				
+				placesDataArray.push(entry);
+
+				placesDataArray.forEach(function(entry, index) {
+					Object.keys(placeData).forEach(function(key){
+						if(entry[key] === undefined){
+							console.log("undefined entry key from Obj index:",'['+ index +'] '+entry.name + ' => '+key);
+							entry[key] = 'Lady Gaga';
+						}
+					});
+				});
+				//console.log('placesDataArray:',placesDataArray );
+			}
+
+
+
 
 
 return gMapService;

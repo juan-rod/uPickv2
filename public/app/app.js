@@ -8,10 +8,10 @@ var app = angular.module("uPick", ['ngRoute','ui.bootstrap','ngFitText','geoloca
           templateUrl : "/partials/main.html",
           controller : "mainCtrl"
         })
-        // .when('/sidePanel',{
-        //   templateUrl : "/partials/sidePanel.html",
-        //   controller : "mainCtrl"
-        // })
+        .when('/login',{
+          templateUrl : "/partials/login.html",
+          controller : "mainCtrl"
+        })
         // .when('/main',{
         //   templateUrl : "/partials/main.html",
         //   controller : "mainCtrl"
