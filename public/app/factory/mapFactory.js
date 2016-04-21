@@ -85,7 +85,7 @@ var userLatLng,
 		  position: userLatLng,
 		  animation: google.maps.Animation.DROP,
 		  map: map,
-		  icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+		  icon: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png'
 		});
 			markerInfo(marker, lat, lng);
 			lastMarker = marker;
@@ -106,7 +106,7 @@ var userLatLng,
 		            position: e.latLng,
 		            animation: google.maps.Animation.Drop,
 		            map: map,
-		            icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'	          	 
+		            icon: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png'	          	 
 		        });
 			        // When a new spot is selected, delete the old red bouncing marker & reload placesMarkers 
 					if(lastMarker){
@@ -143,7 +143,7 @@ var userLatLng,
 			map: map,
 			position: placeLoc,
 			animation: google.maps.Animation.DROP,
-			icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+			icon: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png'
 		});
 			placesMarkers.push(marker);
 			placesInfoWindow(marker, place);
