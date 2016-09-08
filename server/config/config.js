@@ -5,7 +5,7 @@ module.exports = {
 	development : {
 		db: 'mongodb://localhost/uPickv2',
 		rootPath: rootPath,
-		port: process.env.PORT || 3030
+		port: process.env.PORT || 3031
 	},
 	production: {
 		db: 'mongodb://juanrod:upickv2@ds011228.mlab.com:11228/upickv2',

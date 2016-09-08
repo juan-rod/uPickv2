@@ -1,0 +1,34 @@
+
+@import "partials/base";
+@import "partials/login";
+@import "partials/map";
+@import "partials/side-panel";
+
+body{
+	background-color: $bg-color;
+  	font-family: $font-stack, sans-serif;
+  	color: $text-color;
+  	height: 100%; 
+  	overflow: hidden;
+}
+
+::-webkit-scrollbar { 
+    display: none; 
+}
+/*//////////////////////////////////////*/
+/*///// borders /////// */
+.border {
+  border: 2px dotted black; }
+
+.border2 {
+  border: 2px solid red; }
+
+.border3 {
+  border: 2px solid yellow; }
+
+.border4 {
+  border: 2px solid white; }
+
+.border5 {
+  border: 2px solid red; }
+

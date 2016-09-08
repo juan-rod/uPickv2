@@ -1,0 +1,55 @@
+.sidePanel{
+	float: right;
+	height: auto;
+	overflow: scroll;
+	max-height: 100%;
+
+	.sp_content{
+		height: 100px;
+		background-color: #eee;
+		margin: 5 0;
+		box-shadow: 0px 4px 19px -15px rgba(202, 198, 198, 0.82);
+		.sp_content-name{
+			font-size: 25px;
+			margin-bottom: 0;
+    		border-bottom: 1px solid #C3C3C3;
+		}
+		.sp_content-address{
+			font-size: 14px;
+		}
+		.sp_content-number{
+			font-size: 14px;
+		}
+		.sp_content-website{
+			font-size: 14px;
+		}
+		.sp_content-rating{
+			font-size: 14px;
+			position: absolute;
+		    background-color: #C0E8E8;
+		    height: 35px;
+		    width: 35px;
+		    border-radius: 50%;
+		    text-align: center;
+		    top: -5;
+		    right: -10;
+		    padding-top: 5px;
+		}
+		.sp_content-open{
+			font-size: 14px;
+			position: absolute;
+		    background-color: #97E2E2;
+		    height: 35px;
+		    width: 35px;
+		    border-radius: 50%;
+		    text-align: center;
+		    top: 20px;
+		    right: -10;
+		    padding-top: 5px;
+		}
+		.sp_content-review{
+			font-size: 14px;
+		}
+
+	}
+}

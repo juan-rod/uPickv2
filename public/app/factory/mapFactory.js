@@ -1,4 +1,4 @@
-app.factory('mapFactory', function($rootScope, $http, customMapFactory, placesDetailFactory){
+app.factory('mapFactory', function($rootScope, $http, customMapFactory){
 
 // Service to return
 var gMapService ={}
@@ -58,6 +58,7 @@ var userLatLng,
                         	placeIDs.push(placeID);                        	
                         	setPlacesMarker(nearbyRestaurants);
                       }
+                      console.log("*****in initiPlacesMap******:", placesDataArray);
                         	getPlacesDetailInfo();
                   };
                 }
@@ -112,6 +113,7 @@ var userLatLng,
 					if(lastMarker){
 						lastMarker.setMap(null);
 						reloadPlacesMarkers();
+						console.log("in newMarkerLocation:", placesDataArray);
 					}
 					// Create a new red bouncing marker and move to it
 					lastMarker = marker;
@@ -123,8 +125,9 @@ var userLatLng,
 
 					markerInfo(lastMarker,newLat, newLng);
 					initPlacesMap(newUserLatLng);
-					//getPlacesDetailInfo(placeIDs);
 	        });
+
+
 	};
 
 	function markerInfo(marker, lat, lng){
@@ -157,7 +160,6 @@ var userLatLng,
 	    placeIDs = []; 
 	};
 
-
 	function placesInfoWindow(marker, place){
 		marker.addListener('click',function() {
 			infowindow.open(map, this);
@@ -170,11 +172,13 @@ var userLatLng,
 	}
 
 	function getPlacesDetailInfo(){
+				console.log("hello from getPlacesDetailInfo");
+
 		var service = new google.maps.places.PlacesService(map);
-			//console.log("placeIDs:", placeIDs);
+			console.log("placeIDs:", placeIDs);
 		for (var i = 0; i < placeIDs.length; i++) {
 			var placeID = placeIDs[i];
-				//console.log("placeID in the getPlacesDetailInfo fnc :", placeID);
+				// console.log("placeID in the getPlacesDetailInfo fnc :", placeID);
 			var request = { placeId: placeID};
 			var placeData = {};
 			service.getDetails(request, function(details, status) {
@@ -189,8 +193,16 @@ var userLatLng,
 						parseLat = parseFloat(lat).toFixed(3),
 						parseLng = parseFloat(lng).toFixed(3),
 						opening_hours = details.opening_hours.open_now,
+						
 						reviews = details.reviews[1].text;
-
+						
+							if (opening_hours === true){
+								opening_hours = 'Open';
+							}else{
+								opening_hours = 'Closed';
+								
+							}
+						
 				    var placeData = {
 				        name: details.name,
 				        address: details.formatted_address,
@@ -201,12 +213,23 @@ var userLatLng,
 				        review: reviews,
 				        website: details.website,
 				        open: opening_hours 
-					} ;					
-					addToPlacesDataArray(placeData);
-				}				     		
+					} ;		
+					placesDataArray.push(placeData);
+					// console.log("placeData:",placeData);	
+					// console.log("placesDataArray:",placesDataArray);	
+				$http.post('/places', placeData)
+                    .success(function (data) {
+                     // console.log("got it!", data);
+                    })
+                    .error(function (data) {
+                        console.log('Error in posting: ', data);
+                    }); 
+					// addToPlacesDataArray(placesDataArray);
+				}	
 			});
 		}
 	};
+				console.log("placesDataArray:",placesDataArray);			     		
 			function addToPlacesDataArray(obj) {
 				// Create our entry backed by the defaults
 				var entry = Object.create(placeData);
@@ -229,7 +252,8 @@ var userLatLng,
 						}
 					});
 				});
-				//console.log('placesDataArray:',placesDataArray );
+				placesDetailFactory.getPlacesDetailInfo(placesDataArray);
+				console.log('placesDataArray:',placesDataArray );
 			}
 
 
